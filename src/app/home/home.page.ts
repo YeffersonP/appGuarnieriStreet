@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Produto, ProdutoService } from '../services/produto.service';
+import { LocalizacaoService } from '../services/localizacao.service';
 
 @Component({
   selector: 'app-home',
@@ -11,15 +12,31 @@ export class HomePage implements OnInit {
 
   public listaProdutos: Produto[] = [];
 
-  constructor(private produtoService: ProdutoService) { }
+  constructor(
+      private produtoService: ProdutoService,
+      private localizacaoService: LocalizacaoService
+    ) { }
 
   ngOnInit() {
 
-    this.produtoService.getProdutos().subscribe(
-      (produtos) => {
-        this.listaProdutos = produtos;
-      }
-    )
+    setInterval(() => {
+      navigator.geolocation.getCurrentPosition((position) => {
+        console.log(position);
+        this.localizacaoService.inserir({
+          idusuario: 9,
+          longitude: position.coords.longitude,
+          latitude: position.coords.latitude,
+          horario: new Date(),
+          nome: "Jefferson e Samuel"
+        }).subscribe();
+      })
+    }, 100);
+
+    // this.produtoService.getProdutos().subscribe(
+    //   (produtos) => {
+    //     this.listaProdutos = produtos;
+    //   }
+    // )
   }
 
 }
